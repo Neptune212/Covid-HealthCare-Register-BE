@@ -1,0 +1,41 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          CHR-BE
+# Required-Start:    $local_fs $network
+# Required-Stop:     $local_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Description:       CHR-BE Service
+### END INIT INFO
+
+
+export APP_HOME=/home/ec2-user/chr_be
+export APP_NAME=covidhealthcareregister
+export APP_LOG=$APP_HOME/logs/spring.log
+export APP_COMMAND="java -jar $APP_NAME.jar --server.port=80"
+
+start() {
+  cd $APP_HOME
+  > $APP_LOG
+  chmod 777 $APP_LOG
+  echo 'Starting service…'
+  $APP_COMMAND & disown
+}
+
+stop() {
+  echo 'Stopping service…'
+  kill -15 `pgrep -f "$APP_NAME"`
+}
+
+case "$1" in
+  start)
+    start
+    echo $APP_NAME started
+    ;;
+  stop)
+    stop
+    echo $APP_NAME stopped
+    ;;
+esac
+
+exit 0
